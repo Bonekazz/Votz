@@ -5,3 +5,9 @@
 :root {
   margin: 0px;
 }
+
+@layer base {
+  .animated-button {
+    @apply active:scale-95 transition-all ease-in-out;
+  }
+}

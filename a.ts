@@ -1,15 +1,7 @@
+import { Player } from "@/lib/modules/players/types";
+
 const MIN_PLAYERS = 12;
 const MIN_TEAM_PLAYERS = 6;
-
-interface Player {
-    name: string;
-    skillLevel: number;
-}
-interface Team {
-    name: string;
-    players: Player[];
-    skillLevel: number;
-}
 
 const Players: Player[] = [
     {name: "Hierro", skilLevel: 7},
