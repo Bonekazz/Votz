@@ -9,7 +9,6 @@ import { z } from 'zod';
 import { playerSchema } from '@/lib/modules/players/schemas';
 import AlertModal from '@/components/modal/AlertModal';
 
-
 export default function Players() {
 
   const [players, setPlayers] = useState<Player[]>([])
@@ -18,6 +17,8 @@ export default function Players() {
   const [formName, setFormName] = useState("");
 
   const [importedPlayers, setImportedPlayers] = useState("");
+
+  const [editingPlayer, setEditingPlayer] = useState<Player>({id: "", name: "", skillLevel: 0});
 
   useEffect(() => {
     setPlayers(getLocalPlayers());
@@ -83,6 +84,14 @@ export default function Players() {
     (document.getElementById(modalId) as HTMLDialogElement).showModal();
   }
 
+  function handleEditPlayer(id: string) {
+    const player = players.find((p: Player) => p.id === id);
+    if (!player) throw new Error("Player id not found");
+
+    setEditingPlayer(player);
+    openModal("edit-player-modal");
+  }
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-5">
       <header className="flex items-center gap-5 p-4 border-b">
@@ -104,7 +113,7 @@ export default function Players() {
             <thead>
               <tr className="text-center">
                 <th></th>
-                <th className="p-4">Nome</th>
+                <th className="p-4">nome</th>
                 <th className="p-4">habilidade</th>
                 <th></th>
               </tr>
@@ -113,13 +122,20 @@ export default function Players() {
               {players && players.map((player: any, index) => {
                 return (
                   <tr key={index} className="text-center">
-                    <th>{index + 1}</th>
-                    <td>{player.name}</td>
-                    <td>{player.skillLevel}</td>
-                    <td>
-                      <button 
-                        onClick={() => handleDeletePlayer(player.id)} 
-                        className="animated-button border p-2 rounded-2xl text-sm">deletar</button>
+                    <th className="pt-3">{index + 1}</th>
+                    <td className="pt-3">{player.name}</td>
+                    <td className="pt-3">{player.skillLevel}</td>
+                    <td className="pt-3">
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => handleEditPlayer(player.id)} 
+                          className="animated-button border p-2 rounded-2xl text-sm">editar
+                        </button>
+                        <button 
+                          onClick={() => handleDeletePlayer(player.id)} 
+                          className="animated-button border p-2 rounded-2xl text-sm">deletar
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )
@@ -188,6 +204,54 @@ export default function Players() {
       </dialog>
 
       <AlertModal id={"clipboard-modal-success"} type={"success"}>A lista de jogadores foi copiada para o seu "copiar e colar".</AlertModal>
+
+      <dialog id="edit-player-modal" className="modal">
+
+        <div className="modal-box">
+          
+          <span className="text-2xl font-bold">Editar jogador</span>
+          
+          <div className="flex flex-col gap-3">
+            
+            <input 
+              onInput={(e: any) => setEditingPlayer({...editingPlayer, name: e.target.value})}
+              type="text" placeholder="Nome do jogador" value={editingPlayer && editingPlayer.name || ""} 
+              className="input input-bordered w-full mt-8" />
+
+            <div className="rating flex flex-col gap-2">
+              <span>Nível de habilidade:</span>
+              <div>
+                <input 
+                  onChange={() => setEditingPlayer({...editingPlayer, skillLevel: 1})} 
+                  type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={editingPlayer.skillLevel === 1}/>
+                <input 
+                  onChange={() => setEditingPlayer({...editingPlayer, skillLevel: 2})}
+                  type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={editingPlayer.skillLevel === 2}/>
+                <input
+                  onChange={() => setEditingPlayer({...editingPlayer, skillLevel: 3})}
+                  type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={editingPlayer.skillLevel === 3}/>
+                <input 
+                  onChange={() => setEditingPlayer({...editingPlayer, skillLevel: 4})}
+                  type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={editingPlayer.skillLevel === 4}/>
+                <input 
+                  onChange={() => setEditingPlayer({...editingPlayer, skillLevel: 5})}
+                  type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={editingPlayer.skillLevel === 5}/>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="modal-action">
+            <button className="btn no-focus">salvar</button>
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">cancelar</button>
+            </form>
+          </div>
+
+        </div>
+
+      </dialog>
 
     </div>
   )

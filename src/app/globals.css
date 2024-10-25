@@ -10,4 +10,8 @@
   .animated-button {
     @apply active:scale-95 transition-all ease-in-out;
   }
+
+  .no-focus {
+    @apply focus:outline-none;
+  }
 }
