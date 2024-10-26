@@ -92,6 +92,17 @@ export default function Players() {
     openModal("edit-player-modal");
   }
 
+  function handleSaveEditedPlayer() {
+    const newPlayers = players.map((p: Player) => {
+      if (p.id === editingPlayer.id) return editingPlayer;
+      return p;
+    });
+
+    setPlayers(newPlayers);
+    savePlayersToLocal(newPlayers);
+    closeModal("edit-player-modal");
+  }
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-5">
       <header className="flex items-center gap-5 p-4 border-b">
@@ -165,11 +176,11 @@ export default function Players() {
             <div className="rating flex flex-col gap-2">
               <span>Nível de habilidade:</span>
               <div>
-                <input onChange={() => setFormRating(1)} type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={formRating === 1}/>
-                <input onChange={() => setFormRating(2)} type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={formRating === 2}/>
-                <input onChange={() => setFormRating(3)} type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={formRating === 3}/>
-                <input onChange={() => setFormRating(4)} type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={formRating === 4}/>
-                <input onChange={() => setFormRating(5)} type="radio" name="rating-2" className="mask mask-star-2 bg-purple-500" checked={formRating === 5}/>
+                <input onChange={() => setFormRating(1)} type="radio" name="edit-player-rating" className="mask mask-star-2 bg-purple-500" checked={formRating === 1}/>
+                <input onChange={() => setFormRating(2)} type="radio" name="edit-player-rating" className="mask mask-star-2 bg-purple-500" checked={formRating === 2}/>
+                <input onChange={() => setFormRating(3)} type="radio" name="edit-player-rating" className="mask mask-star-2 bg-purple-500" checked={formRating === 3}/>
+                <input onChange={() => setFormRating(4)} type="radio" name="edit-player-rating" className="mask mask-star-2 bg-purple-500" checked={formRating === 4}/>
+                <input onChange={() => setFormRating(5)} type="radio" name="edit-player-rating" className="mask mask-star-2 bg-purple-500" checked={formRating === 5}/>
               </div>
             </div>
 
@@ -205,6 +216,7 @@ export default function Players() {
 
       <AlertModal id={"clipboard-modal-success"} type={"success"}>A lista de jogadores foi copiada para o seu "copiar e colar".</AlertModal>
 
+      { /** EDIT PLAYER MODAL **/ }
       <dialog id="edit-player-modal" className="modal">
 
         <div className="modal-box">
@@ -242,7 +254,7 @@ export default function Players() {
           </div>
 
           <div className="modal-action">
-            <button className="btn no-focus">salvar</button>
+            <button className="btn no-focus" onClick={handleSaveEditedPlayer}>salvar</button>
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn">cancelar</button>
@@ -252,6 +264,7 @@ export default function Players() {
         </div>
 
       </dialog>
+      { /** END - EDIT PLAYER MODAL **/ }
 
     </div>
   )
