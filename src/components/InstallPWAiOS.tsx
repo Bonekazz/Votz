@@ -7,7 +7,7 @@ export default function InstallPWAiOS() {
   const context = useContext(SheetContext);
 
   useEffect(() => {
-    context?.setViewPercentage(80);
+    context?.setViewPercentage(90);
   }, []);
 
   return (

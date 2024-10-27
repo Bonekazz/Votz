@@ -1,13 +1,13 @@
 "use client";
 
 import { v4 as uuidv4 } from 'uuid';
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getLocalPlayers, savePlayersToLocal } from '@/lib/modules/players/queries';
 import { Player } from '@/lib/modules/players/types';
 import { z } from 'zod';
 import { playerSchema } from '@/lib/modules/players/schemas';
 import AlertModal from '@/components/modal/AlertModal';
+import { Ellipsis } from 'lucide-react';
 
 export default function Players() {
 
@@ -19,6 +19,8 @@ export default function Players() {
   const [importedPlayers, setImportedPlayers] = useState("");
 
   const [editingPlayer, setEditingPlayer] = useState<Player>({id: "", name: "", skillLevel: 0});
+
+  const [seletedPlayer, setSelectedPlayer] = useState<Player>({id: "", name: "", skillLevel: 0});
 
   useEffect(() => {
     setPlayers(getLocalPlayers());
@@ -104,55 +106,46 @@ export default function Players() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-5">
-      <header className="flex items-center gap-5 p-4 border-b">
-        <Link href="/" className="">
-          <button className="btn">início</button>
-        </Link>
-        <span className="font-bold text-3xl">Seus Jogadores</span>
-      </header>
+    <div className="w-full h-full flex flex-col items-center justify-center gap-5 px-2">
 
-      <div className="flex flex-col justify-center items-end gap-5">
+      <div className="flex flex-col justify-center items-end gap-5 w-[90%] h-full">
         
         <div className="flex gap-2">
           <button className="btn w-fit" onClick={() => (document.getElementById("import-modal") as HTMLDialogElement).showModal()}>importar</button>
           <button className="btn w-fit" onClick={handleExport}>exportar</button>
         </div>
 
-        <div id="players" className="overflow-x-auto overflow-y-scroll h-[400px] border rounded-2xl px-5 pb-4">
-          <table>
-            <thead>
-              <tr className="text-center">
-                <th></th>
-                <th className="p-4">nome</th>
-                <th className="p-4">habilidade</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {players && players.map((player: any, index) => {
+        <div id="players" className="overflow-x-auto h-[300px] w-full border rounded-2xl px-3 py-5">
+
+          <div id="players-table" className="flex flex-col gap-5 h-full">
+
+            <div className="flex font-bold">
+              <span className="w-[40px]"></span>
+              <span className="w-[100px] px-3">Nome</span>
+              <span className="w-[100px] px-3">Habilidade</span>
+              <span className="w-[40px]"></span>
+            </div>
+
+            <div className="flex flex-col overflow-y-scroll">
+              {players && players.map((player: Player, index: number) => {
                 return (
-                  <tr key={index} className="text-center">
-                    <th className="pt-3">{index + 1}</th>
-                    <td className="pt-3">{player.name}</td>
-                    <td className="pt-3">{player.skillLevel}</td>
-                    <td className="pt-3">
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => handleEditPlayer(player.id)} 
-                          className="animated-button border p-2 rounded-2xl text-sm">editar
-                        </button>
-                        <button 
-                          onClick={() => handleDeletePlayer(player.id)} 
-                          className="animated-button border p-2 rounded-2xl text-sm">deletar
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <div key={index} id={player.id} 
+                    className={`
+                      flex py-[10px] cursor-pointer 
+                      last:border-none border-b
+                      active:bg-black/10 transition-all ease-in-out rounded-xl`}
+                  >
+                    <span className="w-[40px] font-bold text-center">{index}</span>
+                    <span className="w-[100px] px-3 whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px]">{player.name}</span>
+                    <span className="w-[100px] px-3 text-center">{player.skillLevel}</span>
+                    <span className="w-[40px] flex justify-center"><Ellipsis /></span>
+                  </div>
                 )
               })}
-            </tbody>
-          </table>
+            </div>
+
+          </div>
+
         </div>
 
         <div>
@@ -162,8 +155,6 @@ export default function Players() {
         </div>
 
       </div>
-
-
 
       <dialog id="player-creation-modal" className="modal">
 
@@ -265,6 +256,26 @@ export default function Players() {
 
       </dialog>
       { /** END - EDIT PLAYER MODAL **/ }
+
+
+      <dialog id="player-action-modal" className="modal">
+
+        <div className="modal-box">
+
+          <div className="flex flex-col">
+            <button className="w-full border-b py-3">editar</button>
+            <button className="w-full py-3">deletar</button>
+          </div>
+
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">cancelar</button>
+            </form>
+          </div>
+        </div>
+
+      </dialog>
 
     </div>
   )

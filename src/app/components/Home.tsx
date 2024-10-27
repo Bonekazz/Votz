@@ -9,6 +9,8 @@ import { getLocalLastGenedTeams, saveLastGenedTeamsToLocal } from "@/lib/modules
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import PWASheet from "./PWASheet";
+import { Menu, Shuffle } from "lucide-react";
+import Header from "@/components/Header";
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
@@ -60,18 +62,10 @@ export default function Home() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      <PWASheet />
-
-      <header className="flex items-center gap-5 p-4 border-b">
-        <Link href="/players" className="">
-          <button className="btn">seus jogadores</button>
-        </Link>
-        <span className="font-bold text-3xl">Início</span>
-      </header>
 
       <div className="flex flex-col items-end gap-2 mt-5">
           
-        {generatedTeams.length > 0 && <button className="btn w-fit" onClick={handleTeamsGen}>embaralhar</button>}
+        {generatedTeams.length > 0 && <button className="border rounded-xl p-2 animated-button active:bg-black/10" onClick={handleTeamsGen}><Shuffle size={20}/></button>}
         <div id="generated-teams" className="w-fit flex justify-evenly border rounded-2xl h-fit overflow-hidden">
 
         {generatedTeams && generatedTeams.map((team: Team, index: number) => {

@@ -1,3 +1,4 @@
+import PWAModal from "./components/PWAModal";
 import "./globals.css";
 import { Viewport } from "next";
 
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="w-[100dvw] h-[100dvh]">
+        { /** <PWAModal /> **/ }
         {children}
       </body>
     </html>
