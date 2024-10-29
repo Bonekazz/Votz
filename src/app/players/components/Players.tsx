@@ -7,7 +7,7 @@ import { Player } from '@/lib/modules/players/types';
 import { z } from 'zod';
 import { playerSchema } from '@/lib/modules/players/schemas';
 import AlertModal from '@/components/modal/AlertModal';
-import { Ellipsis } from 'lucide-react';
+import { Ellipsis, Plus } from 'lucide-react';
 
 export default function Players() {
 
@@ -20,7 +20,7 @@ export default function Players() {
 
   const [editingPlayer, setEditingPlayer] = useState<Player>({id: "", name: "", skillLevel: 0});
 
-  const [seletedPlayer, setSelectedPlayer] = useState<Player>({id: "", name: "", skillLevel: 0});
+  const [selectedPlayer, setSelectedPlayer] = useState<Player>({id: "", name: "", skillLevel: 0});
 
   useEffect(() => {
     setPlayers(getLocalPlayers());
@@ -46,6 +46,8 @@ export default function Players() {
 
     savePlayersToLocal(newPlayers);
     setPlayers(newPlayers);
+
+    return true;
   }
 
   function resetForm() {
@@ -106,30 +108,66 @@ export default function Players() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-5 px-2">
+    <div className="w-full h-full flex flex-col items-center gap-5 px-2 mt-[2em]">
 
-      <div className="flex flex-col justify-center items-end gap-5 w-[90%] h-full">
-        
-        <div className="flex gap-2">
-          <button className="btn w-fit" onClick={() => (document.getElementById("import-modal") as HTMLDialogElement).showModal()}>importar</button>
-          <button className="btn w-fit" onClick={handleExport}>exportar</button>
-        </div>
+      <div className="flex flex-col gap-5 w-[90%]">
 
-        <div id="players" className="overflow-x-auto h-[300px] w-full border rounded-2xl px-3 py-5">
+        <div id="players" className="overflow-x-auto h-[60dvh] w-full border rounded-2xl px-3 py-5">
 
           <div id="players-table" className="flex flex-col gap-5 h-full">
 
-            <div className="flex font-bold">
-              <span className="w-[40px]"></span>
-              <span className="w-[100px] px-3">Nome</span>
-              <span className="w-[100px] px-3">Habilidade</span>
-              <span className="w-[40px]"></span>
+            <div className="flex flex-col items-end gap-5">
+              <div className="w-full flex justify-between">
+                
+                <div className="flex gap-2">
+                  <button 
+                    className="
+                      animated-button flex items-center justify-center
+                      border p-1 px-2 rounded-xl w-fit text-sm
+                      active:bg-black/10
+                    "
+                    onClick={() => openModal("import-modal")}
+                    >importar</button>
+                  <button 
+                    className="
+                      animated-button flex items-center justify-center
+                      border p-1 px-2 rounded-xl w-fit text-sm
+                      active:bg-black/10
+                    "
+                    onClick={handleExport}
+                    >exportar</button>
+                </div>
+
+                <button 
+                  className="
+                    animated-button flex items-center justify-center gap-2
+                    border p-1 px-2 rounded-xl w-fit text-sm
+                    active:bg-black/10
+                  "
+                  onClick={() => openModal("player-creation-modal")}
+                  >
+                  <Plus size={20}/>
+                  <span>criar</span>
+                </button>
+
+              </div>
+
+              <div className="flex font-bold w-full">
+                <span className="w-[40px]"></span>
+                <span className="w-[100px] px-3">Nome</span>
+                <span className="w-[100px] px-3">Habilidade</span>
+                <span className="w-[40px]"></span>
+              </div>
             </div>
 
             <div className="flex flex-col overflow-y-scroll">
               {players && players.map((player: Player, index: number) => {
                 return (
                   <div key={index} id={player.id} 
+                    onClick={() => {
+                      openModal("player-actions-modal");
+                      setSelectedPlayer(player);
+                    }}
                     className={`
                       flex py-[10px] cursor-pointer 
                       last:border-none border-b
@@ -146,12 +184,6 @@ export default function Players() {
 
           </div>
 
-        </div>
-
-        <div>
-          <button 
-            className="btn"
-            onClick={() => (document.getElementById("player-creation-modal") as HTMLDialogElement).showModal()}>criar</button>
         </div>
 
       </div>
@@ -258,13 +290,24 @@ export default function Players() {
       { /** END - EDIT PLAYER MODAL **/ }
 
 
-      <dialog id="player-action-modal" className="modal">
+      <dialog id="player-actions-modal" className="modal">
 
         <div className="modal-box">
 
           <div className="flex flex-col">
-            <button className="w-full border-b py-3">editar</button>
-            <button className="w-full py-3">deletar</button>
+            <button 
+              className="w-full border-b py-3" 
+              onClick={() => {
+                handleEditPlayer(selectedPlayer.id);
+                closeModal("player-actions-modal");
+              }}>editar</button>
+            <button 
+              className="w-full py-3"
+              onClick={() => {
+                openModal("confirm-delete-modal");
+                closeModal("player-actions-modal");
+              }}
+            >deletar</button>
           </div>
 
           <div className="modal-action">
@@ -276,6 +319,30 @@ export default function Players() {
         </div>
 
       </dialog>
+
+      <dialog id="confirm-delete-modal" className="modal">
+
+        <div className="modal-box">
+
+          <span className="text-xl font-medium">Tem certeza que deseja excluir este jogador?</span>
+
+          <div className="modal-action">
+            <button 
+              className="w-full" 
+              onClick={() => {
+                handleDeletePlayer(selectedPlayer.id) 
+                  && closeModal("confirm-delete-modal") 
+                  && closeModal("player-actions-modal")
+              }}>sim</button>
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">cancelar</button>
+            </form>
+          </div>
+        </div>
+
+      </dialog>
+
 
     </div>
   )
