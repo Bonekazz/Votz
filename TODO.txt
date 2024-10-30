@@ -1,0 +1,7 @@
+[ ] - Input fields error alerts
+
+[ ] - Offline experience
+
+[x] - buy me a coffe link (help the developers)
+
+[ ] - Loading element

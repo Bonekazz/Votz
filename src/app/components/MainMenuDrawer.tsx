@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Heart, Menu } from "lucide-react";
+import { Heart, HeartHandshake, Menu } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -24,8 +24,11 @@ export default function MainMenuDrawer({ title, children }: Props) {
 
   return (
     <div className="w-full h-full">
+
       <div className="drawer w-full h-full">
+
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+
         <div className="drawer-content w-full h-full flex flex-col">
           {/* Page content here */}
           <Header title={title}/>
@@ -38,18 +41,25 @@ export default function MainMenuDrawer({ title, children }: Props) {
               href="https://linktr.ee/bonekazz" target="_blank">Hierro Fernandes</Link>
           </div>
         </div>
+
         <div className="drawer-side">
           <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-            {/* Sidebar content here */}
-            { pages.map((page: Nav, index: number) => {
-              return (
-                <li key={index} className={`${page.title === title ? "bg-black text-white" : ""} p-2 animated-button rounded-xl`}>
-                  <Link href={`${page.link}`}>{page.element(page.title)}</Link>   
-                </li>
-              )
-            }) }
-          </ul>
+          <div className="bg-white h-full w-80 p-4 flex flex-col justify-between">
+            <ul className="menu">
+              {/* Sidebar content here */}
+              { pages.map((page: Nav, index: number) => {
+                return (
+                  <li key={index} className={`${page.title === title ? "font-bold underline underline-offset-8 decoration-2" : ""} text-lg py-2 animated-button rounded-xl`}>
+                    <Link href={`${page.link}`}>{page.element(page.title)}</Link>   
+                  </li>
+                )
+              }) }
+            </ul>
+            <Link href="https://ko-fi.com/bonekazz" target="_blank" className="p-2 animated-button rounded-xl flex gap-2 items-center pb-10">
+              <HeartHandshake />
+              <span>Ajude os desenvolvedores</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
