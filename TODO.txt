@@ -1,9 +1,4 @@
 [ ] - Input fields error alerts
-
-[ ] - Offline experience
-
-[x] - buy me a coffe link (help the developers)
-
+[ ] - PWA offline experience
 [ ] - Loading element
-
-testando
+[ ] - User auth (clerk) and Data persistence
